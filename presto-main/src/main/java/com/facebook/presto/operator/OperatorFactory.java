@@ -15,6 +15,8 @@ package com.facebook.presto.operator;
 
 import com.facebook.presto.execution.Lifespan;
 
+// OperatorFactory 相当于控制平面
+// Operator 相当于数据平面
 public interface OperatorFactory
 {
     Operator createOperator(DriverContext driverContext);

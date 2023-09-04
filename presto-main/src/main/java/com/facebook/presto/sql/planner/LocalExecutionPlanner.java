@@ -839,6 +839,7 @@ public class LocalExecutionPlanner
         }
     }
 
+    // #question: 它是怎么表达一个计划的?
     public static class LocalExecutionPlan
     {
         private final List<DriverFactory> driverFactories;

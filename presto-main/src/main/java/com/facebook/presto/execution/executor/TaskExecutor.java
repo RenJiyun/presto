@@ -572,6 +572,7 @@ public class TaskExecutor
         }
     }
 
+    // 驱动 Driver 运行的代码, 也可以说是线程
     private class TaskRunner
             implements Runnable
     {
@@ -598,10 +599,14 @@ public class TaskExecutor
                         runningSplitInfos.add(splitInfo);
                         runningSplits.add(split);
 
+                        //////////////////////////////////////////////////////////////////////////
                         ListenableFuture<?> blocked;
                         try {
+                            // 虽然这里是 PrioritizedSplitRunner, 但最终其实是 Driver
+                            // com.facebook.presto.execution.SqlTaskExecution.DriverSplitRunner.processFor
                             blocked = split.process();
                         }
+                        //////////////////////////////////////////////////////////////////////////
                         finally {
                             runningSplitInfos.remove(splitInfo);
                             runningSplits.remove(split);

@@ -151,6 +151,9 @@ public class PrioritizedSplitRunner
         return waitNanos.get();
     }
 
+
+    // 该方法由 com.facebook.presto.execution.executor.TaskExecutor.TaskRunner 驱动运行
+    // 并且 TaskRunner 不需要理解其语义, 仅作为线程提供计算资源
     public ListenableFuture<?> process()
     {
         try {
@@ -162,7 +165,10 @@ public class PrioritizedSplitRunner
             waitNanos.getAndAdd(startNanos - lastReady.get());
 
             long cpuStart = THREAD_MX_BEAN.getCurrentThreadCpuTime();
+
+            ////////////////////////////////////////////////////////////////////////
             ListenableFuture<?> blocked = split.processFor(SPLIT_RUN_QUANTA);
+            ////////////////////////////////////////////////////////////////////////
 
             long quantaCpuNanos = THREAD_MX_BEAN.getCurrentThreadCpuTime() - cpuStart;
             long endNanos = ticker.read();

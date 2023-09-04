@@ -101,12 +101,15 @@ public class SqlTaskExecutionFactory
         LocalExecutionPlan localExecutionPlan;
         try (SetThreadName ignored = new SetThreadName("Task-%s", taskStateMachine.getTaskId())) {
             try {
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // #question: 在 plan 什么?
                 localExecutionPlan = planner.plan(
                         taskContext,
                         fragment,
                         outputBuffer,
                         new HttpRemoteSourceFactory(blockEncodingSerde, taskExchangeClientManager, orderingCompiler),
                         tableWriteInfo);
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
             catch (Throwable e) {
                 // planning failed

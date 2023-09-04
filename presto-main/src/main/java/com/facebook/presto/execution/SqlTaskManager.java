@@ -130,7 +130,7 @@ public class SqlTaskManager
     public SqlTaskManager(
             LocalExecutionPlanner planner,
             LocationFactory locationFactory,
-            TaskExecutor taskExecutor,
+            TaskExecutor taskExecutor,          // TaskExecutor 也是单例呈现
             SplitMonitor splitMonitor,
             NodeInfo nodeInfo,
             LocalMemoryManager localMemoryManager,
