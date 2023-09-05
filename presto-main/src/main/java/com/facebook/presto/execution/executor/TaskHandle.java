@@ -41,12 +41,17 @@ public class TaskHandle
     private final TaskPriorityTracker priorityTracker;
     private final OptionalInt maxDriversPerTask;
 
+    // 当前该 task 中待处理的 split
     @GuardedBy("this")
     protected final Queue<PrioritizedSplitRunner> queuedLeafSplits = new ArrayDeque<>(10);
+
+    // 当前该 task 中正在执行的 split
     @GuardedBy("this")
     protected final List<PrioritizedSplitRunner> runningLeafSplits = new ArrayList<>(10);
     @GuardedBy("this")
     protected final List<PrioritizedSplitRunner> runningIntermediateSplits = new ArrayList<>(10);
+
+    // 该 task 的并发控制器, 用于控制该 task 中的 split 的并发度
     @GuardedBy("this")
     protected final SplitConcurrencyController concurrencyController;
 

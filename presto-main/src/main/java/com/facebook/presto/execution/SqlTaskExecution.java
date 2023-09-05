@@ -123,9 +123,12 @@ public class SqlTaskExecution
 
     private final List<WeakReference<Driver>> drivers = new CopyOnWriteArrayList<>();
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // #question: DriverSplitRunnerFactory 跟 XXX life cycle 有什么关系？
     private final Map<PlanNodeId, DriverSplitRunnerFactory> driverRunnerFactoriesWithSplitLifeCycle;
     private final List<DriverSplitRunnerFactory> driverRunnerFactoriesWithDriverGroupLifeCycle;
     private final List<DriverSplitRunnerFactory> driverRunnerFactoriesWithTaskLifeCycle;
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
     // guarded for update only
     @GuardedBy("this")
@@ -173,7 +176,7 @@ public class SqlTaskExecution
             TaskStateMachine taskStateMachine,
             TaskContext taskContext,
             OutputBuffer outputBuffer,
-            LocalExecutionPlan localExecutionPlan,
+            LocalExecutionPlan localExecutionPlan,      // 关注 LocalExecutionPlan 如何被使用
             TaskExecutor taskExecutor,
             SplitMonitor splitMonitor,
             Executor notificationExecutor)
@@ -194,6 +197,8 @@ public class SqlTaskExecution
             ImmutableMap.Builder<PlanNodeId, DriverSplitRunnerFactory> driverRunnerFactoriesWithSplitLifeCycle = ImmutableMap.builder();
             ImmutableList.Builder<DriverSplitRunnerFactory> driverRunnerFactoriesWithTaskLifeCycle = ImmutableList.builder();
             ImmutableList.Builder<DriverSplitRunnerFactory> driverRunnerFactoriesWithDriverGroupLifeCycle = ImmutableList.builder();
+
+            /////////////////////////////////////////////////////////////////////////////////////////
             for (DriverFactory driverFactory : localExecutionPlan.getDriverFactories()) {
                 Optional<PlanNodeId> sourceId = driverFactory.getSourceId();
                 if (sourceId.isPresent() && tableScanSources.contains(sourceId.get())) {
@@ -212,6 +217,8 @@ public class SqlTaskExecution
                     }
                 }
             }
+            /////////////////////////////////////////////////////////////////////////////////////////
+
             this.driverRunnerFactoriesWithSplitLifeCycle = driverRunnerFactoriesWithSplitLifeCycle.build();
             this.driverRunnerFactoriesWithDriverGroupLifeCycle = driverRunnerFactoriesWithDriverGroupLifeCycle.build();
             this.driverRunnerFactoriesWithTaskLifeCycle = driverRunnerFactoriesWithTaskLifeCycle.build();
@@ -517,6 +524,7 @@ public class SqlTaskExecution
                 runners.add(driverRunnerFactory.createDriverRunner(null, Lifespan.taskWide()));
             }
         }
+        // 奖 runners 递交给 TaskExecutor
         enqueueDriverSplitRunner(true, runners);
         for (DriverSplitRunnerFactory driverRunnerFactory : driverRunnerFactoriesWithTaskLifeCycle) {
             driverRunnerFactory.noMoreDriverRunner(ImmutableList.of(Lifespan.taskWide()));
@@ -548,6 +556,8 @@ public class SqlTaskExecution
     private synchronized void enqueueDriverSplitRunner(boolean forceRunSplit, List<DriverSplitRunner> runners)
     {
         // schedule driver to be executed
+        // taskExecutor 是在 com.facebook.presto.execution.SqlTaskManager.SqlTaskManager 被注入, 传递至此
+        // #question: taskExecutor 是否在每个 worker 中都只有一个实例
         List<ListenableFuture<?>> finishedFutures = taskExecutor.enqueueSplits(taskHandle, forceRunSplit, runners);
         checkState(finishedFutures.size() == runners.size(), "Expected %s futures but got %s", runners.size(), finishedFutures.size());
 
@@ -917,6 +927,7 @@ public class SqlTaskExecution
 
     private class DriverSplitRunnerFactory
     {
+        // driverFactory 是由 LocalExecutionPlanner 所决定的
         private final DriverFactory driverFactory;
         private final PipelineContext pipelineContext;
         private boolean closed;

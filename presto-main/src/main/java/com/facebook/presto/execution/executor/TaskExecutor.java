@@ -401,6 +401,8 @@ public class TaskExecutor
         log.debug("Task finished or failed %s", taskHandle.getTaskId());
     }
 
+    // 当某个 task 有新的 split 进来时, 会调用这个方法
+    // 一般仅仅控制执行的策略, 如并发度, 不会涉及到策略本身的内容(该职责属于 planner: com.facebook.presto.sql.planner.LocalExecutionPlanner)
     public List<ListenableFuture<?>> enqueueSplits(TaskHandle taskHandle, boolean intermediate, List<? extends SplitRunner> taskSplits)
     {
         List<PrioritizedSplitRunner> splitsToDestroy = new ArrayList<>();
