@@ -280,6 +280,8 @@ public class SqlQueryManager
                 .ifPresent(QueryExecution::recordHeartbeat);
     }
 
+
+    // 从资源控制中出来后的入口
     @Override
     public void createQuery(QueryExecution queryExecution)
     {

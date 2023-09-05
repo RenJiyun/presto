@@ -16,6 +16,7 @@ package com.facebook.presto.spi.resourceGroups;
 import io.airlift.units.DataSize;
 import io.airlift.units.Duration;
 
+// #question: 控制哪些资源以及控制机制
 public interface ResourceGroup
 {
     ResourceGroupId getId();

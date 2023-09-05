@@ -104,6 +104,8 @@ public class QueryStateMachine
     private static final Logger QUERY_STATE_LOG = Logger.get(QueryStateMachine.class);
 
     private final QueryId queryId;
+
+    // sql statement
     private final String query;
     private final Optional<String> preparedQuery;
     private final Session session;

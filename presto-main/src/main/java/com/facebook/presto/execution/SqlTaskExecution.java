@@ -557,7 +557,7 @@ public class SqlTaskExecution
     {
         // schedule driver to be executed
         // taskExecutor 是在 com.facebook.presto.execution.SqlTaskManager.SqlTaskManager 被注入, 传递至此
-        // #question: taskExecutor 是否在每个 worker 中都只有一个实例
+        // #question: taskExecutor 是否在每个 worker 中都只有一个实例, 看起来只有一个实例
         List<ListenableFuture<?>> finishedFutures = taskExecutor.enqueueSplits(taskHandle, forceRunSplit, runners);
         checkState(finishedFutures.size() == runners.size(), "Expected %s futures but got %s", runners.size(), finishedFutures.size());
 

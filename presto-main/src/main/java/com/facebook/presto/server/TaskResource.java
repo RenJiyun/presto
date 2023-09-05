@@ -146,6 +146,9 @@ public class TaskResource
         return allTaskInfo;
     }
 
+
+    // #question: who invoke this endpoint? why?
+    // or why there is a task to be created or updated?
     @POST
     @Path("{taskId}")
     @Consumes({APPLICATION_JSON, APPLICATION_JACKSON_SMILE})

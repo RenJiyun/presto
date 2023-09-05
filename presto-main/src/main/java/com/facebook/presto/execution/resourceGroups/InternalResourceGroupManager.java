@@ -254,8 +254,11 @@ public final class InternalResourceGroupManager<C>
         if (started.compareAndSet(false, true)) {
             refreshExecutor.scheduleWithFixedDelay(() -> {
                 try {
+                    ////////////////////////////////////////////////////
+                    // 调度入队的查询
                     refreshAndStartQueries();
                     lastSchedulingCycleRunTimeMs.getAndSet(currentTimeMillis());
+                    ////////////////////////////////////////////////////
                 }
                 catch (Throwable t) {
                     log.error(t, "Error while executing refreshAndStartQueries");

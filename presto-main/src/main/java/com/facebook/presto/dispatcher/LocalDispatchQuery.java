@@ -208,6 +208,9 @@ public class LocalDispatchQuery
             if (isDispatching) {
                 try {
                     resourceGroupQueryLimits.get().ifPresent(queryExecution::setResourceGroupQueryLimits);
+
+                    // 由 QueryManager 接手
+                    // com.facebook.presto.execution.QueryManager.createQuery
                     querySubmitter.accept(queryExecution);
                 }
                 catch (Throwable t) {

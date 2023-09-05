@@ -218,6 +218,8 @@ public class QueuedStatementResource
                 tracerProviderManager.getTracerProvider(),
                 Optional.of(sessionPropertyManager));
         Query query = new Query(statement, sessionContext, dispatchManager, queryResultsProvider, 0);
+
+        // 只有当客户端拉取结果时, 该查询才会被调度
         queries.put(query.getQueryId(), query);
 
         return withCompressionConfiguration(Response.ok(query.getInitialQueryResults(uriInfo, xForwardedProto, xPrestoPrefixUrl)), compressionEnabled).build();

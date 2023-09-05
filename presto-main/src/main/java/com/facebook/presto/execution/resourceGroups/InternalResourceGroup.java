@@ -1154,9 +1154,11 @@ public class InternalResourceGroup
         {
             internalRefreshStats();
 
+            ///////////////////////////////////////////
             while (internalStartNext()) {
                 // start all the queries we can
             }
+            ///////////////////////////////////////////
         }
 
         public synchronized void generateCpuQuota(long elapsedSeconds)

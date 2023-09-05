@@ -132,7 +132,7 @@ public class LocalDispatchQueryFactory
     public DispatchQuery createDispatchQuery(
             Session session,
             AnalyzerProvider analyzerProvider,
-            String query,
+            String query,       // sql statement
             PreparedQuery preparedQuery,
             String slug,
             int retryCount,
