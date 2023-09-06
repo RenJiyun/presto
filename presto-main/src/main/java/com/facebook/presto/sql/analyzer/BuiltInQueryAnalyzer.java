@@ -46,6 +46,9 @@ public class BuiltInQueryAnalyzer
     private final Optional<QueryExplainer> queryExplainer;
     private final ExecutorService metadataExtractorExecutor;
 
+
+    // #question: com/facebook/presto/server/ServerMainModule.java:307
+    // 这里需要了解一下 Guice 的注入机制
     @Inject
     public BuiltInQueryAnalyzer(
             Metadata metadata,

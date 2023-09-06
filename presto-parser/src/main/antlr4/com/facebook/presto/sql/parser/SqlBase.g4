@@ -18,6 +18,7 @@ tokens {
     DELIMITER
 }
 
+// 解析入口
 singleStatement
     : statement EOF
     ;
