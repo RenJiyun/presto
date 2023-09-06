@@ -39,6 +39,8 @@ public class BuiltInQueryAnalyzer
         implements QueryAnalyzer
 {
     private final Metadata metadata;
+
+    // 注入的实例
     private final SqlParser sqlParser;
     private final AccessControl accessControl;
     private final Optional<QueryExplainer> queryExplainer;

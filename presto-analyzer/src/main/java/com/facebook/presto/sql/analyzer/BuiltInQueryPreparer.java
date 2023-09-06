@@ -67,7 +67,11 @@ public class BuiltInQueryPreparer
     @Override
     public BuiltInPreparedQuery prepareQuery(AnalyzerOptions analyzerOptions, String query, Map<String, String> preparedStatements, WarningCollector warningCollector)
     {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 纯语法的分析
         Statement wrappedStatement = sqlParser.createStatement(query, createParsingOptions(analyzerOptions));
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         if (warningCollector.hasWarnings() && analyzerOptions.getWarningHandlingLevel() == AS_ERROR) {
             throw new PrestoException(WARNING_AS_ERROR, format("Warning handling level set to AS_ERROR. Warnings: %n %s",
                     warningCollector.getWarnings().stream()
