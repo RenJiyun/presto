@@ -128,6 +128,8 @@ public class SqlQueryExecution
     private final SectionExecutionFactory sectionExecutionFactory;
     private final InternalNodeManager internalNodeManager;
 
+    // 每个查询都有专属的调度器
+    // #question: 这些调度器如何被管理
     private final AtomicReference<SqlQuerySchedulerInterface> queryScheduler = new AtomicReference<>();
     private final AtomicReference<Plan> queryPlan = new AtomicReference<>();
     private final ExecutionPolicy executionPolicy;
@@ -523,6 +525,7 @@ public class SqlQueryExecution
             ////////////////////////////////////////////////////////////////////////////
             PlanNode planNode = stateMachine.getSession()
                     .getRuntimeStats()
+                    // 做一些时间统计
                     .profileNanos(
                             LOGICAL_PLANNER_TIME_NANOS,
                             () -> queryAnalyzer.plan(this.analyzerContext, queryAnalysis));

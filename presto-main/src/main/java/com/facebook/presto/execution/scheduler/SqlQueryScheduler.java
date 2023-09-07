@@ -146,6 +146,7 @@ public class SqlQueryScheduler
     private final Metadata metadata;
     private final SqlParser sqlParser;
 
+    // #question: 该结构是怎么产生的
     private final StreamingPlanSection sectionedPlan;
     private final boolean summarizeTaskInfo;
     private final int maxConcurrentMaterializations;
@@ -281,9 +282,11 @@ public class SqlQueryScheduler
         if (scheduling.get()) {
             return;
         }
+        // 该线程池受到统一管理: com/facebook/presto/execution/SqlQueryExecution.java:896
         executor.submit(this::schedule);
     }
 
+    // 执行计划调度入口
     private void schedule()
     {
         if (!scheduling.compareAndSet(false, true)) {
@@ -554,6 +557,7 @@ public class SqlQueryScheduler
     private List<StreamingPlanSection> getSectionsReadyForExecution()
     {
         long runningPlanSections =
+                // #question: StreamingPlanSection 的数据结构
                 stream(forTree(StreamingPlanSection::getChildren).depthFirstPreOrder(sectionedPlan))
                         .map(section -> getLatestSectionExecution(getStageId(section.getPlan().getFragment().getId())))
                         .filter(Optional::isPresent)

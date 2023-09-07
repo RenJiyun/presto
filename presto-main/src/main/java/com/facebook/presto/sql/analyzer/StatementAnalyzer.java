@@ -920,7 +920,8 @@ class StatementAnalyzer
         }
 
         @Override
-        protected Scope visitCreateTable(CreateTable node, Optional<Scope> scope)
+        protected Scope visitCreateTable(CreateTable node, Optional<Scope> sc
+                                         ope)
         {
             validateProperties(node.getProperties(), scope);
             return createAndAssignScope(node, scope);

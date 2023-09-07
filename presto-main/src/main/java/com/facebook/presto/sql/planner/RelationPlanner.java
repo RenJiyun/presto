@@ -164,6 +164,8 @@ class RelationPlanner
     {
         // Check if relation planner timeout
         checkInterruption();
+        // #question: 为什么可以通过遍历 sql 的语法树来构建逻辑执行计划? 中间的信息是怎么收集的?
+        // 该 planner 本身是作为语法树的 visitor 的形式呈现的
         return super.process(node, context);
     }
 
@@ -741,6 +743,7 @@ class RelationPlanner
     @Override
     protected RelationPlan visitQuery(Query node, SqlPlannerContext context)
     {
+        // Query --> QueryPlanner
         return new QueryPlanner(analysis, variableAllocator, idAllocator, lambdaDeclarationToVariableMap, metadata, session, context, sqlParser)
                 .plan(node);
     }

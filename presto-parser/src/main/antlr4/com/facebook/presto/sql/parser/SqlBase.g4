@@ -31,6 +31,7 @@ standaloneRoutineBody
     : routineBody EOF
     ;
 
+// sql 结构
 statement
     : query                                                            #statementDefault
     | USE schema=identifier                                            #use
