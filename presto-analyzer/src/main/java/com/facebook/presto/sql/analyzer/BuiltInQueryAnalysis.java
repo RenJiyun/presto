@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+// com.facebook.presto.spi.analyzer.QueryAnalyzer.analyze 分析后的结果
+// 只暴露 com.facebook.presto.sql.analyzer.Analysis 的部分信息
+// 有意思的地方就是下游如何根据 QueryAnalysis 提供的信息进行逻辑执行计划的制定
 public class BuiltInQueryAnalysis
         implements QueryAnalysis
 {

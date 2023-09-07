@@ -15,6 +15,8 @@ package com.facebook.presto.sql.tree;
 
 import javax.annotation.Nullable;
 
+
+// 主要被 QueryAnalyzer 用来构建 QueryAnalysis
 public abstract class AstVisitor<R, C>
 {
     public R process(Node node)

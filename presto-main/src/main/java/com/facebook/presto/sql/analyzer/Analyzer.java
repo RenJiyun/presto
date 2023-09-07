@@ -114,6 +114,8 @@ public class Analyzer
         Analysis analysis = new Analysis(rewrittenStatement, parameterLookup, isDescribe);
 
         metadataExtractor.populateMetadataHandle(session, rewrittenStatement, analysis.getMetadataHandle());
+
+        // 通过 visitor 模式进行分析
         StatementAnalyzer analyzer = new StatementAnalyzer(analysis, metadata, sqlParser, accessControl, session, warningCollector);
         analyzer.analyze(rewrittenStatement, Optional.empty());
         analyzeForUtilizedColumns(analysis, analysis.getStatement());

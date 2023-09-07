@@ -520,11 +520,17 @@ public class SqlQueryExecution
             // time analysis phase
             stateMachine.beginAnalysis();
 
+            ////////////////////////////////////////////////////////////////////////////
             PlanNode planNode = stateMachine.getSession()
                     .getRuntimeStats()
                     .profileNanos(
                             LOGICAL_PLANNER_TIME_NANOS,
                             () -> queryAnalyzer.plan(this.analyzerContext, queryAnalysis));
+
+            // QueryAnalyzer 接口
+            // 1. 如何对 Statement 进行分析, 主要是分析什么?
+            // 2. 如何生成逻辑计划
+            ////////////////////////////////////////////////////////////////////////////
 
             Optimizer optimizer = new Optimizer(
                     stateMachine.getSession(),

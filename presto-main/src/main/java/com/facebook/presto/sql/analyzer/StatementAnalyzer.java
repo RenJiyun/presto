@@ -298,6 +298,8 @@ class StatementAnalyzer
     private final Session session;
     private final SqlParser sqlParser;
     private final AccessControl accessControl;
+
+    // 用于收集分析过程中的警告信息
     private final WarningCollector warningCollector;
     private final MetadataResolver metadataResolver;
 
