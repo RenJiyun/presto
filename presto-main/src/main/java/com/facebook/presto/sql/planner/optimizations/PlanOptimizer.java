@@ -20,6 +20,8 @@ import com.facebook.presto.spi.plan.PlanNode;
 import com.facebook.presto.spi.plan.PlanNodeIdAllocator;
 import com.facebook.presto.sql.planner.TypeProvider;
 
+// 优化算子, 例如条件下推
+// 需要注意的是, 有些优化算子之间存在顺序依赖
 public interface PlanOptimizer
 {
     PlanNode optimize(PlanNode plan,

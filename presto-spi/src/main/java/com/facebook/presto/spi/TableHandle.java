@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 public final class TableHandle
 {
+    // 用来指向该表实际所在的存储层
     private final ConnectorId connectorId;
     private final ConnectorTableHandle connectorHandle;
     private final ConnectorTransactionHandle transaction;

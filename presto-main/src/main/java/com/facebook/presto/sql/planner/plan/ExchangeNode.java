@@ -43,6 +43,9 @@ import static com.facebook.presto.util.MoreLists.listOfListsCopy;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+// #question: why logical execution plan need to generate ExchangeNode?
+// this question is related to -> com/facebook/presto/sql/planner/PlanFragment.java:216
+// 大部分情况, 该节点是由一些优化算子产生
 @Immutable
 public class ExchangeNode
         extends InternalPlanNode

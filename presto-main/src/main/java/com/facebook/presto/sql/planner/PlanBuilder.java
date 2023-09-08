@@ -36,6 +36,8 @@ import static java.util.Objects.requireNonNull;
 class PlanBuilder
 {
     private final TranslationMap translations;
+
+    // 上层节点
     private final PlanNode root;
 
     public PlanBuilder(TranslationMap translations, PlanNode root)

@@ -113,6 +113,8 @@ public class Optimizer
                     throw new PrestoException(QUERY_PLANNING_TIMEOUT, String.format("The query optimizer exceeded the timeout of %s.", getQueryAnalyzerTimeout(session).toString()));
                 }
                 long start = System.nanoTime();
+                // 大体上, 将 root -> newRoot
+                // 对逻辑计划树进行转换
                 PlanNode newRoot = optimizer.optimize(root, session, TypeProvider.viewOf(variableAllocator.getVariables()), variableAllocator, idAllocator, warningCollector);
                 requireNonNull(newRoot, format("%s returned a null plan", optimizer.getClass().getName()));
                 if (enableVerboseRuntimeStats || trackOptimizerRuntime(session, optimizer)) {

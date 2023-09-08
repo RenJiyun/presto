@@ -43,6 +43,7 @@ import static java.util.Objects.requireNonNull;
 
 public class SplitManager
 {
+    // 管理所有存储层的 ConnectorSplitManager
     private final ConcurrentMap<ConnectorId, ConnectorSplitManager> splitManagers = new ConcurrentHashMap<>();
     private final int minScheduleSplitBatchSize;
     private final Metadata metadata;

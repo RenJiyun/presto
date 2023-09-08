@@ -213,6 +213,7 @@ public class PlanFragment
             findRemoteSourceNodes(source, builder);
         }
 
+        // #question: what is RemoteSourceNode or which scenario will generate RemoteSourceNode?
         if (node instanceof RemoteSourceNode) {
             builder.add((RemoteSourceNode) node);
         }

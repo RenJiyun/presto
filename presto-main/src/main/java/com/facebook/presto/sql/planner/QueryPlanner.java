@@ -183,10 +183,15 @@ class QueryPlanner
         builder = handleSubqueries(builder, query, orderBy);
         List<Expression> outputs = analysis.getOutputExpressions(query);
         builder = handleSubqueries(builder, query, outputs);
+
+        ////////////////////////////////////////////////////////////////////
+        // limit <-- offset <-- sort <-- project
         builder = project(builder, Iterables.concat(orderBy, outputs));
         builder = sort(builder, query);
         builder = offset(builder, query.getOffset());
         builder = limit(builder, query);
+        ////////////////////////////////////////////////////////////////////
+
         builder = project(builder, analysis.getOutputExpressions(query));
 
         return new RelationPlan(builder.getRoot(), analysis.getScope(query), computeOutputs(builder, analysis.getOutputExpressions(query)));
@@ -1134,6 +1139,7 @@ class QueryPlanner
 
     private PlanBuilder sort(PlanBuilder subPlan, Query node)
     {
+        // sort 将作为 subPlan 的上层节点
         return sort(subPlan, node.getOrderBy(), analysis.getOrderByExpressions(node));
     }
 

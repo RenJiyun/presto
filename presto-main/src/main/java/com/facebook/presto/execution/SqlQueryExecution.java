@@ -117,6 +117,8 @@ public class SqlQueryExecution
     private final int retryCount;
     private final Metadata metadata;
     private final SqlParser sqlParser;
+
+    // #question: 它所管理的信息从哪里来
     private final SplitManager splitManager;
     private final List<PlanOptimizer> planOptimizers;
     private final List<PlanOptimizer> runtimePlanOptimizers;
@@ -523,16 +525,13 @@ public class SqlQueryExecution
             stateMachine.beginAnalysis();
 
             ////////////////////////////////////////////////////////////////////////////
+            // 以 InternalPlanNode 表达逻辑计划, 相对来讲是平凡的算法
             PlanNode planNode = stateMachine.getSession()
                     .getRuntimeStats()
                     // 做一些时间统计
                     .profileNanos(
                             LOGICAL_PLANNER_TIME_NANOS,
                             () -> queryAnalyzer.plan(this.analyzerContext, queryAnalysis));
-
-            // QueryAnalyzer 接口
-            // 1. 如何对 Statement 进行分析, 主要是分析什么?
-            // 2. 如何生成逻辑计划
             ////////////////////////////////////////////////////////////////////////////
 
             Optimizer optimizer = new Optimizer(
@@ -588,6 +587,9 @@ public class SqlQueryExecution
 
     private void planDistribution(PlanRoot plan)
     {
+        // 实际的 SplitSource 需要在提供 TableHandle 的情况下才能创建, 需要访问表所在的存储层驱动
+        // sql <---> SpiltSource 之间需要有一个适配的过程, 例如 sql 访问的字段是否为存储层的分区字段等
+        // 因此, 在访问 splitSourceProvider 之前, 无法做出真正的分布式查询计划, 只能收集 sql 中与此相关的上下文信息
         CloseableSplitSourceProvider splitSourceProvider = new CloseableSplitSourceProvider(splitManager::getSplits);
 
         // ensure split sources are closed
@@ -620,6 +622,7 @@ public class SqlQueryExecution
 
         SplitSourceFactory splitSourceFactory = new SplitSourceFactory(splitSourceProvider, stateMachine.getWarningCollector());
         // build the stage execution objects (this doesn't schedule execution)
+        // 启动的地方: com/facebook/presto/execution/SqlQueryExecution.java:473
         SqlQuerySchedulerInterface scheduler = getScheduler(plan, outputStagePlan, rootOutputBuffers, splitSourceFactory);
 
         queryScheduler.set(scheduler);
