@@ -149,6 +149,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
+// 将 data shuffling operator 添加到执行计划中
 public class AddExchanges
         implements PlanOptimizer
 {
