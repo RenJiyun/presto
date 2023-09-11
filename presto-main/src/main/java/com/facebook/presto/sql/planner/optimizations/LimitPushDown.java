@@ -113,6 +113,8 @@ public class LimitPushDown
         @Override
         public PlanNode visitLimit(LimitNode node, RewriteContext<LimitContext> context)
         {
+            // 将 limit 节点信息往上游 (该节点的子节点) 节点推
+            // #question: 直接往上推为什么会奏效?
             long count = node.getCount();
             if (context.get() != null) {
                 count = Math.min(count, context.get().getCount());

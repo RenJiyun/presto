@@ -34,6 +34,8 @@ public final class FilterNode
         extends PlanNode
 {
     private final PlanNode source;
+
+    // to express where condition
     private final RowExpression predicate;
 
     @JsonCreator
