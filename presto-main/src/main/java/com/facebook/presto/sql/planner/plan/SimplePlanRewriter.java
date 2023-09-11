@@ -21,6 +21,8 @@ import static com.facebook.presto.sql.planner.plan.ChildReplacer.replaceChildren
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+// 节点重写框架, 用于 PlanOptimizer 的实现
+// 其中 C 表示特定 PlanOptimizer 中的上下文, 作为 RewriteContext 的扩展
 public abstract class SimplePlanRewriter<C>
         extends InternalPlanVisitor<PlanNode, SimplePlanRewriter.RewriteContext<C>>
 {
@@ -31,8 +33,10 @@ public abstract class SimplePlanRewriter<C>
 
     public static <C> PlanNode rewriteWith(SimplePlanRewriter<C> rewriter, PlanNode node, C context)
     {
-        // If we rewrite a plan node, topmost node should remain statistically equivalent.
+        // rewrite
         PlanNode result = node.accept(rewriter, new RewriteContext<>(rewriter, context));
+
+        // If we rewrite a plan node, topmost node should remain statistically equivalent.
         if (node.getStatsEquivalentPlanNode().isPresent() && !result.getStatsEquivalentPlanNode().isPresent()) {
             result = result.assignStatsEquivalentPlanNode(node.getStatsEquivalentPlanNode());
         }

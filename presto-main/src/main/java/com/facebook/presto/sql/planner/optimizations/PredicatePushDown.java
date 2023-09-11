@@ -119,6 +119,9 @@ import static com.google.common.collect.Iterables.filter;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
+// Presto 面对的 Connector 跟一般的存储层有一定的区别.
+// 一般的存储层不具备计算能力, 但是 Presto 可以将一部分 sql 层的计算映射到 Connector 中 (#question: Connector 是否具备这种能力?)
+// #question: 哪些场景可以进行下推?
 public class PredicatePushDown
         implements PlanOptimizer
 {

@@ -24,6 +24,7 @@ import com.facebook.presto.sql.planner.TypeProvider;
 // 需要注意的是, 有些优化算子之间存在顺序依赖
 public interface PlanOptimizer
 {
+    // 优化算子的入口, 大部分是基于规则进行节点的改写( rewrite )
     PlanNode optimize(PlanNode plan,
             Session session,
             TypeProvider types,

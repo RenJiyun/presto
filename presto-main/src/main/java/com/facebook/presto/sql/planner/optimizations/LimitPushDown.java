@@ -166,6 +166,9 @@ public class LimitPushDown
         {
             // the fallback logic (in visitPlan) for node types we don't know about introduces a limit node,
             // so we need this here to push the limit through this trivial node type
+            // 采用默认的逻辑:
+            // 1. 递归改写子节点
+            // 2. 替换子节点
             return context.defaultRewrite(node, context.get());
         }
 

@@ -68,6 +68,7 @@ public abstract class PlanNode
 
     /**
      * Get the upstream PlanNodes (i.e., children) of the current PlanNode.
+     * 一般来讲, 这些节点的输出会作为当前节点的输入
      */
     public abstract List<PlanNode> getSources();
 
@@ -93,6 +94,10 @@ public abstract class PlanNode
 
     /**
      * A visitor pattern interface to operate on IR.
+     * 不同的节点会将控制分发到不同的方法中, 例如:
+     * SortNode -> visitor.visitSort()
+     * TableScanNode -> visitor.visitTableScan()
+     * #question: 一般来讲, 顶层的节点是哪些? ProjectNode?
      */
     public <R, C> R accept(PlanVisitor<R, C> visitor, C context)
     {

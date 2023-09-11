@@ -46,6 +46,8 @@ public final class LimitNode
         FINAL
     }
 
+    //          data
+    // source --------> LimitNode
     private final PlanNode source;
     private final long count;
     private final Step step;

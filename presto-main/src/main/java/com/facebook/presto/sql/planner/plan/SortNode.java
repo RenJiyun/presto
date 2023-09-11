@@ -33,6 +33,9 @@ import static java.util.Objects.requireNonNull;
 public class SortNode
         extends InternalPlanNode
 {
+
+    //          data
+    // source --------> SortNode
     private final PlanNode source;
     private final OrderingScheme orderingScheme;
     private final boolean isPartial;
