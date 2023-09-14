@@ -145,6 +145,8 @@ public class TableScanOperator
         return planNodeId;
     }
 
+
+    // 给该节点添加一个 split (数据源)
     @Override
     public Supplier<Optional<UpdatablePageSource>> addSplit(ScheduledSplit scheduledSplit)
     {
@@ -250,6 +252,7 @@ public class TableScanOperator
     @Override
     public void addInput(Page page)
     {
+        // 该节点已经是叶子节点
         throw new UnsupportedOperationException(getClass().getName() + " can not take input");
     }
 

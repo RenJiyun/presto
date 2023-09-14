@@ -34,6 +34,7 @@ import static java.lang.String.format;
 import static java.util.Collections.newSetFromMap;
 import static java.util.Objects.requireNonNull;
 
+// 用于 Operator 之间交换数据
 public final class Page
 {
     public static final int INSTANCE_SIZE = ClassLayout.parseClass(Page.class).instanceSize();

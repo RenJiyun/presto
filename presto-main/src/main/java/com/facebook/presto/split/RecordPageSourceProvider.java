@@ -27,6 +27,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+// Connector 默认的 ConnectorPageSourceProvider 实现类
 public class RecordPageSourceProvider
         implements ConnectorPageSourceProvider
 {

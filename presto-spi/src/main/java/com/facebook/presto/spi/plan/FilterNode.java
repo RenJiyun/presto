@@ -29,6 +29,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
+// where 节点
 @Immutable
 public final class FilterNode
         extends PlanNode
@@ -83,6 +84,7 @@ public final class FilterNode
     @Override
     public List<VariableReferenceExpression> getOutputVariables()
     {
+        // 输出变量与它的子节点一致
         return source.getOutputVariables();
     }
 

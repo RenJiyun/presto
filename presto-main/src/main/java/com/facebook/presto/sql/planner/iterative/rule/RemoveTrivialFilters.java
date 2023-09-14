@@ -44,10 +44,12 @@ public class RemoveTrivialFilters
         RowExpression predicate = filterNode.getPredicate();
 
         if (predicate.equals(TRUE_CONSTANT)) {
+            // 直接将 filterNode 的子节点上提
             return Result.ofPlanNode(filterNode.getSource());
         }
 
         if (predicate.equals(FALSE_CONSTANT)) {
+            // 裁剪掉整个 filterNode, 并用一个空的 ValuesNode 替代
             return Result.ofPlanNode(new ValuesNode(filterNode.getSourceLocation(), context.getIdAllocator().getNextId(), filterNode.getOutputVariables(), ImmutableList.of(), Optional.empty()));
         }
 

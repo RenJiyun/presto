@@ -19,6 +19,7 @@ import com.facebook.presto.matching.Matcher;
 import com.facebook.presto.matching.Pattern;
 import com.facebook.presto.matching.PatternVisitor;
 
+// 根据节点类型进行匹配
 public class TypeOfPattern<T>
         extends Pattern<T>
 {

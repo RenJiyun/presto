@@ -57,6 +57,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
+// 基于规则的优化器
 public class IterativeOptimizer
         implements PlanOptimizer
 {

@@ -37,6 +37,7 @@ import static com.facebook.presto.matching.Pattern.typeOf;
 import static com.facebook.presto.matching.Property.optionalProperty;
 import static com.facebook.presto.matching.Property.property;
 
+// 各种 pattern 登记的地方
 public class Patterns
 {
     private Patterns() {}

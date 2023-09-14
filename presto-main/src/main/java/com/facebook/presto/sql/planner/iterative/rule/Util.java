@@ -90,6 +90,7 @@ class Util
                         node.getSourceLocation(),
                         idAllocator.getNextId(),
                         node,
+                        // 去掉不需要的列
                         identityAssignments(restrictedOutputs),
                         LOCAL));
     }

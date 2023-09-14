@@ -27,12 +27,17 @@ import java.util.Optional;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
+// 一般作为逻辑执行计划的根节点
 @Immutable
 public class OutputNode
         extends PlanNode
 {
     private final PlanNode source;
+
+    // 跟 outputVariables 保持一一对应
     private final List<String> columnNames;
+
+    // 该节点的输出列表, 例如: SELECT a, b, c FROM t; 则该列表为[a, b, c]
     private final List<VariableReferenceExpression> outputVariables; // column name = variable.name
 
     @JsonCreator

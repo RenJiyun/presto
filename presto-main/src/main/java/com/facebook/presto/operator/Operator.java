@@ -17,6 +17,10 @@ import com.facebook.presto.common.Page;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+// 控制平面          ---> 数据平面
+// OperatorFactory ---> Operator
+// com.facebook.presto.operator.OperatorContext
+// Operator 之间的驱动逻辑: com/facebook/presto/operator/Driver.java:422
 public interface Operator
         extends AutoCloseable
 {

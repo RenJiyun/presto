@@ -48,9 +48,15 @@ public class OrderByOperator
     {
         private final int operatorId;
         private final PlanNodeId planNodeId;
+
+        // 上游节点的各个输出列的类型
         private final List<Type> sourceTypes;
+
+        // 输出列
         private final List<Integer> outputChannels;
         private final int expectedPositions;
+
+        // 排序列
         private final List<Integer> sortChannels;
         private final List<SortOrder> sortOrder;
         private final PagesIndex.Factory pagesIndexFactory;
@@ -196,6 +202,7 @@ public class OrderByOperator
         return operatorContext;
     }
 
+    // 数据上游节点调用该方法后, 才会触发排序
     @Override
     public void finish()
     {

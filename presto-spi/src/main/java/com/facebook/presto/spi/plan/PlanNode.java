@@ -68,7 +68,8 @@ public abstract class PlanNode
 
     /**
      * Get the upstream PlanNodes (i.e., children) of the current PlanNode.
-     * 一般来讲, 这些节点的输出会作为当前节点的输入
+     * 一般来讲, 这些节点的输出会作为当前节点的输入, 也就是子节点.
+     * 从数据的流向上讲, 这些节点为上游节点
      */
     public abstract List<PlanNode> getSources();
 

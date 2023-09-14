@@ -898,6 +898,7 @@ public class LocalExecutionPlanner
                 InternalPlanVisitor<PhysicalOperation, LocalExecutionPlanContext> visitor);
     }
 
+    // 用于生成物理执行: PhysicalOperation -> Operator
     private class Visitor
             extends InternalPlanVisitor<PhysicalOperation, LocalExecutionPlanContext>
     {
@@ -1239,6 +1240,7 @@ public class LocalExecutionPlanner
 
             List<VariableReferenceExpression> orderByVariables = node.getOrderingScheme().getOrderByVariables();
 
+            // 排序列
             List<Integer> orderByChannels = getChannelsForVariables(orderByVariables, source.getLayout());
 
             ImmutableList.Builder<SortOrder> sortOrder = ImmutableList.builder();
@@ -1246,6 +1248,7 @@ public class LocalExecutionPlanner
                 sortOrder.add(node.getOrderingScheme().getOrdering(variable));
             }
 
+            // 输出列
             ImmutableList.Builder<Integer> outputChannels = ImmutableList.builder();
             for (int i = 0; i < source.getTypes().size(); i++) {
                 outputChannels.add(i);
@@ -1272,6 +1275,7 @@ public class LocalExecutionPlanner
         @Override
         public PhysicalOperation visitLimit(LimitNode node, LocalExecutionPlanContext context)
         {
+            // 先映射上游节点的 PhysicalOperation
             PhysicalOperation source = node.getSource().accept(this, context);
 
             OperatorFactory operatorFactory = new LimitOperatorFactory(context.getNextOperatorId(), node.getId(), node.getCount());
@@ -1616,7 +1620,8 @@ public class LocalExecutionPlanner
                 tableHandle = node.getTable();
             }
             OperatorFactory operatorFactory = new TableScanOperatorFactory(context.getNextOperatorId(), node.getId(), pageSourceProvider, tableHandle, columns);
-            return new PhysicalOperation(operatorFactory, makeLayout(node), context, stageExecutionDescriptor.isScanGroupedExecution(node.getId()) ? GROUPED_EXECUTION : UNGROUPED_EXECUTION);
+            return new PhysicalOperation(operatorFactory, makeLayout(node), context,
+                    stageExecutionDescriptor.isScanGroupedExecution(node.getId()) ? GROUPED_EXECUTION : UNGROUPED_EXECUTION);
         }
 
         @Override
@@ -3438,6 +3443,7 @@ public class LocalExecutionPlanner
         return new PageChannelSelector(channels);
     }
 
+    // 获取各个变量在 layout 中对应的位置
     private static List<Integer> getChannelsForVariables(Collection<VariableReferenceExpression> variables, Map<VariableReferenceExpression, Integer> layout)
     {
         ImmutableList.Builder<Integer> builder = ImmutableList.builder();
@@ -3470,8 +3476,14 @@ public class LocalExecutionPlanner
      */
     public static class PhysicalOperation
     {
+        // 在遍历执行计划时, 先行的 OperatorFactory 会放在前面, 由遍历逻辑决定
+        // com.facebook.presto.sql.planner.LocalExecutionPlanner.Visitor
         private final List<OperatorFactory> operatorFactories;
+
+        // 输出字段与位置的映射
         private final Map<VariableReferenceExpression, Integer> layout;
+
+        // 各个输出字段的类型
         private final List<Type> types;
 
         private final PipelineExecutionStrategy pipelineExecutionStrategy;
@@ -3500,6 +3512,8 @@ public class LocalExecutionPlanner
             requireNonNull(pipelineExecutionStrategy, "pipelineExecutionStrategy is null");
 
             this.operatorFactories = ImmutableList.<OperatorFactory>builder()
+                    // 加入数据上游节点的 PhysicalOperation
+                    // [source1, source2, ..., operatorFactory]
                     .addAll(source.map(PhysicalOperation::getOperatorFactories).orElse(ImmutableList.of()))
                     .add(operatorFactory)
                     .build();
@@ -3515,6 +3529,8 @@ public class LocalExecutionPlanner
             checkArgument(
                     layout.size() == channelCount && ImmutableSet.copyOf(layout.values()).containsAll(ContiguousSet.create(closedOpen(0, channelCount), integers())),
                     "Layout does not have a variable for every output channel: %s", layout);
+
+            // 位置 -> 变量 (输出列)
             Map<Integer, VariableReferenceExpression> channelLayout = ImmutableBiMap.copyOf(layout).inverse();
 
             return range(0, channelCount)

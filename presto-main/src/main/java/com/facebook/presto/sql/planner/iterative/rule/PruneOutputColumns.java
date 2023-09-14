@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import static com.facebook.presto.sql.planner.iterative.rule.Util.restrictChildOutputs;
 import static com.facebook.presto.sql.planner.plan.Patterns.output;
 
+// 针对 OutputNode, 裁剪它的子节点中不需要的输出列
 public class PruneOutputColumns
         implements Rule<OutputNode>
 {

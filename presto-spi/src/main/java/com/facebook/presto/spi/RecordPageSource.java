@@ -30,6 +30,8 @@ public class RecordPageSource
 {
     private static final int ROWS_PER_REQUEST = 4096;
     private final RecordCursor cursor;
+
+    // 各个输出列的类型
     private final List<Type> types;
     private final PageBuilder pageBuilder;
     private long completedPositions;
@@ -108,6 +110,7 @@ public class RecordPageSource
 
                 pageBuilder.declarePosition();
                 for (int column = 0; column < types.size(); column++) {
+                    // #question: Page 和 Block 之间的关系?
                     BlockBuilder output = pageBuilder.getBlockBuilder(column);
                     if (cursor.isNull(column)) {
                         output.appendNull();

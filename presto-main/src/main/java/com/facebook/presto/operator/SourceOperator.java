@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 public interface SourceOperator
         extends Operator
 {
+    // #question: 如何根据 PlanNodeId 找到对应的 PlanNode
     PlanNodeId getSourceId();
 
     Supplier<Optional<UpdatablePageSource>> addSplit(ScheduledSplit split);

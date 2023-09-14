@@ -60,6 +60,8 @@ public class LimitOperator
     }
 
     private final OperatorContext operatorContext;
+
+    // 用于返回给下游节点(或者说父节点)
     private Page nextPage;
     private long remainingLimit;
 

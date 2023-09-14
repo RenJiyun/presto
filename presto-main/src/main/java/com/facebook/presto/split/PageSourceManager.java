@@ -41,6 +41,7 @@ public class PageSourceManager
 {
     private final ConcurrentMap<ConnectorId, ConnectorPageSourceProvider> pageSourceProviders = new ConcurrentHashMap<>();
 
+    // 初始化时, 会将 ConnectorPageSourceProvider (SPI 接口) 注册到 pageSourceProviders 中
     public void addConnectorPageSourceProvider(ConnectorId connectorId, ConnectorPageSourceProvider pageSourceProvider)
     {
         requireNonNull(connectorId, "connectorId is null");
@@ -85,7 +86,8 @@ public class PageSourceManager
                     columns,
                     split.getSplitContext());
         }
-        return getPageSourceProvider(split).createPageSource(split.getTransactionHandle(), connectorSession, split.getConnectorSplit(), columns, split.getSplitContext());
+        return getPageSourceProvider(split)
+                .createPageSource(split.getTransactionHandle(), connectorSession, split.getConnectorSplit(), columns, split.getSplitContext());
     }
 
     private ConnectorPageSourceProvider getPageSourceProvider(Split split)

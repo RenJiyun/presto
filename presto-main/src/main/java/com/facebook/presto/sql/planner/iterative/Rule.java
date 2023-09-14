@@ -32,6 +32,7 @@ public interface Rule<T>
 {
     /**
      * Returns a pattern to which plan nodes this rule applies.
+     * 该规则需要进行匹配的模式
      */
     Pattern<T> getPattern();
 

@@ -428,10 +428,12 @@ public class ConnectorManager
 
             ConnectorPageSourceProvider connectorPageSourceProvider = null;
             try {
+                // 获取 Connector 特定的 ConnectorPageSourceProvider, 并不是每个 Connector 都有自己特定的
                 connectorPageSourceProvider = connector.getPageSourceProvider();
                 requireNonNull(connectorPageSourceProvider, format("Connector %s returned a null page source provider", connectorId));
             }
             catch (UnsupportedOperationException ignored) {
+                // 默认情况下, Connector 的行为
             }
 
             if (connectorPageSourceProvider == null) {

@@ -19,6 +19,7 @@ import com.facebook.presto.matching.pattern.FilterPattern;
 import com.facebook.presto.matching.pattern.TypeOfPattern;
 import com.facebook.presto.matching.pattern.WithPattern;
 
+// 固定的提供一些匹配模式
 public interface Matcher
 {
     default <T> Match<T> match(Pattern<T> pattern, Object object)

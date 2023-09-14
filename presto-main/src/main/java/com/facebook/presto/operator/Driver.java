@@ -79,6 +79,8 @@ public class Driver
     // this is present only for debugging
     @SuppressWarnings("unused")
     private final List<Operator> allOperators;
+
+    // 在整个 Operator 列表中, 最多只能存在一个 SourceOperator 以及 DeleteOperator
     private final Optional<SourceOperator> sourceOperator;
     private final Optional<DeleteOperator> deleteOperator;
 
@@ -138,6 +140,7 @@ public class Driver
         this.activeOperators = new ArrayList<>(operators);
         checkArgument(!operators.isEmpty(), "There must be at least one operator");
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Optional<SourceOperator> sourceOperator = Optional.empty();
         Optional<DeleteOperator> deleteOperator = Optional.empty();
         for (Operator operator : operators) {
@@ -152,6 +155,7 @@ public class Driver
         }
         this.sourceOperator = sourceOperator;
         this.deleteOperator = deleteOperator;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         currentTaskSource = sourceOperator.map(operator -> new TaskSource(operator.getSourceId(), ImmutableSet.of(), false)).orElse(null);
         // initially the driverBlockedFuture is not blocked (it is completed)
@@ -287,6 +291,8 @@ public class Driver
         currentTaskSource = newSource;
     }
 
+
+    // Driver 的入口函数: com.facebook.presto.execution.SqlTaskExecution.DriverSplitRunner.processFor
     public ListenableFuture<?> processFor(Duration duration)
     {
         checkLockNotHeld("Can not process for a duration while holding the driver lock");
@@ -413,6 +419,7 @@ public class Driver
                 }
             }
             else {
+                // Operator 之间的驱动逻辑
                 for (int i = 0; i < activeOperators.size() - 1 && !driverContext.isDone(); i++) {
                     Operator current = activeOperators.get(i);
                     Operator next = activeOperators.get(i + 1);
@@ -729,6 +736,7 @@ public class Driver
 
         Optional<T> result;
         try {
+            // 执行任务
             result = Optional.of(task.get());
         }
         finally {

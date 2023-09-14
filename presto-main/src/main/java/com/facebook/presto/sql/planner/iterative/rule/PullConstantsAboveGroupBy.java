@@ -48,6 +48,8 @@ import static java.util.function.Function.identity;
  * - Project <const_expr>
  *    - GroupBy key1, key2
  * </pre>
+ *
+ * select * from xxx group by a, 1, b; => select * from xxx group by a, b;
  */
 public class PullConstantsAboveGroupBy
         implements Rule<AggregationNode>

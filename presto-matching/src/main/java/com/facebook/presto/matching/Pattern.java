@@ -24,8 +24,10 @@ import java.util.function.Predicate;
 import static com.facebook.presto.matching.DefaultMatcher.DEFAULT_MATCHER;
 import static com.google.common.base.Predicates.not;
 
+// Pattern 之间可以进行简单的组合, DSL 风格
 public abstract class Pattern<T>
 {
+    // 通过 previous 指向上一个 Pattern, 从而形成一个 Pattern 链
     private final Pattern<?> previous;
 
     public static Pattern<Object> any()
