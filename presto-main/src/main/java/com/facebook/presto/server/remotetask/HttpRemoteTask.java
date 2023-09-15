@@ -138,6 +138,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+// #question:
+// 1. Where we create the instance of HttpRemoteTask
+// 2. How we use HttpRemoteTask
+// 3. The relationship between HttpRemoteTask and TaskResource (/v1/task)
 public final class HttpRemoteTask
         implements RemoteTask
 {
@@ -145,6 +149,8 @@ public final class HttpRemoteTask
     private static final double UPDATE_WITHOUT_PLAN_STATS_SAMPLE_RATE = 0.01;
 
     private final TaskId taskId;
+
+    // TaskResource 端点: /v1/task/{taskId}
     private final URI taskLocation;
     private final URI remoteTaskLocation;
 
@@ -226,8 +232,8 @@ public final class HttpRemoteTask
             Session session,
             TaskId taskId,
             String nodeId,
-            URI location,
-            URI remoteLocation,
+            URI location, // legacy
+            URI remoteLocation, // new
             PlanFragment planFragment,
             Multimap<PlanNodeId, Split> initialSplits,
             OutputBuffers outputBuffers,

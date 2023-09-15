@@ -450,6 +450,7 @@ public class SourcePartitionedScheduler
     {
         ImmutableSet.Builder<RemoteTask> newTasks = ImmutableSet.builder();
 
+        // nodes = splitAssignment.keySet + noMoreSplitsNotification.keySet
         ImmutableSet<InternalNode> nodes = ImmutableSet.<InternalNode>builder()
                 .addAll(splitAssignment.keySet())
                 .addAll(noMoreSplitsNotification.keySet())

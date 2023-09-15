@@ -56,6 +56,8 @@ public class TableScanOperator
     {
         private final int operatorId;
         private final PlanNodeId sourceId;
+
+        // 存储层
         private final PageSourceProvider pageSourceProvider;
         private final TableHandle table;
         private final List<ColumnHandle> columns;
@@ -109,7 +111,10 @@ public class TableScanOperator
     private final LocalMemoryContext systemMemoryContext;
     private final SettableFuture<?> blocked = SettableFuture.create();
 
+    // 数据源元信息
     private Split split;
+
+    // 存储层数据源
     private ConnectorPageSource source;
 
     private boolean finished;

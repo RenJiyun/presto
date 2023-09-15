@@ -21,6 +21,7 @@ import com.facebook.presto.spi.TableHandle;
 
 import java.util.List;
 
+// 该接口展示了如何将 ConnectorPageSource 这个 SPI 接口接入到 Presto 中
 public interface PageSourceProvider
 {
     ConnectorPageSource createPageSource(Session session, Split split, TableHandle table, List<ColumnHandle> columns);

@@ -457,8 +457,11 @@ public class SqlQueryExecution
 
                 metadata.beginQuery(getSession(), plan.getConnectors());
 
+                //////////////////////////////////////////////////////////////////
                 // plan distribution of query
                 planDistribution(plan);
+                //////////////////////////////////////////////////////////////////
+
 
                 // transition to starting
                 if (!stateMachine.transitionToStarting()) {

@@ -67,6 +67,7 @@ import static java.util.Objects.requireNonNull;
 // process the actual change before lock release (DriverLockResult.close()).
 // The assures that only one thread will be working with the operators at a
 // time and state changer threads are not blocked.
+// #question: Driver 从哪里接收任务?
 //
 public class Driver
         implements Closeable

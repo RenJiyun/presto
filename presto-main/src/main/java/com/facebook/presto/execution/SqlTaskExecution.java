@@ -121,6 +121,7 @@ public class SqlTaskExecution
 
     private final SplitMonitor splitMonitor;
 
+    // #question: Why WeakReference?
     private final List<WeakReference<Driver>> drivers = new CopyOnWriteArrayList<>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ public class SqlTaskExecution
     @GuardedBy("this")
     private final ConcurrentMap<PlanNodeId, TaskSource> remoteSources = new ConcurrentHashMap<>();
 
+    // ScheduledSplit.sequenceId <= maxAcknowledgedSplit, 说明该 ScheduledSplit 已经被处理过了
     @GuardedBy("this")
     private long maxAcknowledgedSplit = Long.MIN_VALUE;
 
@@ -339,6 +341,7 @@ public class SqlTaskExecution
         sources = sources.stream()
                 .map(source -> new TaskSource(
                         source.getPlanNodeId(),
+                        // 过滤掉已经 acknowledged 的 split
                         source.getSplits().stream()
                                 .filter(scheduledSplit -> scheduledSplit.getSequenceId() > currentMaxAcknowledgedSplit)
                                 .collect(Collectors.toSet()),
@@ -1023,6 +1026,8 @@ public class SqlTaskExecution
         }
     }
 
+
+    // DriverSplitRunner <---> Driver <---> ScheduledSplit
     private static class DriverSplitRunner
             implements SplitRunner
     {
@@ -1033,6 +1038,7 @@ public class SqlTaskExecution
         @GuardedBy("this")
         private boolean closed;
 
+        // 该 SplitRunner 负责的数据源 (ScheduledSplit -> Split)
         @Nullable
         private final ScheduledSplit partitionedSplit;
 

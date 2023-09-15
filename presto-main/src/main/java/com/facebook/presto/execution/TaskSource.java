@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 public class TaskSource
 {
+    // #question: Where the planNodeId comes from?
     private final PlanNodeId planNodeId;
     private final Set<ScheduledSplit> splits;
     private final Set<Lifespan> noMoreSplitsForLifespan;
