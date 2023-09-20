@@ -132,8 +132,6 @@ public class LogicalPlanner
 
     public PlanNode plan(Analysis analysis)
     {
-        // 逻辑执行计划生成入口, 执行计划该数据结构非常重要
-        // 涉及到 stage, task 等相关概念
         return planStatement(analysis, analysis.getStatement());
     }
 
@@ -156,7 +154,6 @@ public class LogicalPlanner
     private RelationPlan planStatementWithoutOutput(Analysis analysis, Statement statement)
     {
         if (statement instanceof CreateTableAsSelect) {
-            // 由调用方处理: com/facebook/presto/sql/planner/LogicalPlanner.java:140
             if (analysis.isCreateTableAsSelectNoOp()) {
                 throw new PrestoException(NOT_SUPPORTED, "CREATE TABLE IF NOT EXISTS is not supported in this context " + statement.getClass().getSimpleName());
             }
@@ -173,7 +170,6 @@ public class LogicalPlanner
             return createDeletePlan(analysis, (Delete) statement);
         }
         else if (statement instanceof Query) {
-            // 最复杂的一种情况
             return createRelationPlan(analysis, (Query) statement, new SqlPlannerContext(0));
         }
         else if (statement instanceof Explain && ((Explain) statement).isAnalyze()) {

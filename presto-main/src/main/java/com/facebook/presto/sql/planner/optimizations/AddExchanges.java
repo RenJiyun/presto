@@ -149,7 +149,8 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-// 将 data shuffling operator 添加到执行计划中
+// add the ExchangeNode to the plan
+// #question: Why we need to add the ExchangeNode to the plan?
 public class AddExchanges
         implements PlanOptimizer
 {
@@ -165,9 +166,12 @@ public class AddExchanges
     }
 
     @Override
-    public PlanNode optimize(PlanNode plan, Session session, TypeProvider types, VariableAllocator variableAllocator, PlanNodeIdAllocator idAllocator, WarningCollector warningCollector)
+    public PlanNode optimize(PlanNode plan, Session session, TypeProvider types, VariableAllocator variableAllocator,
+                             PlanNodeIdAllocator idAllocator, WarningCollector warningCollector)
     {
-        PlanWithProperties result = new Rewriter(idAllocator, variableAllocator, session, partitioningProviderManager).accept(plan, PreferredProperties.any());
+        PlanWithProperties result = new Rewriter(idAllocator, variableAllocator, session, partitioningProviderManager)
+                // 没有任何偏好的属性
+                .accept(plan, PreferredProperties.any());
         return result.getNode();
     }
 
@@ -220,6 +224,7 @@ public class AddExchanges
         @Override
         public PlanWithProperties visitProject(ProjectNode node, PreferredProperties preferredProperties)
         {
+            // select a as a, b as b from xxx? not sure
             Map<VariableReferenceExpression, VariableReferenceExpression> identities = computeIdentityTranslations(node.getAssignments());
             PreferredProperties translatedPreferred = preferredProperties.translate(symbol -> Optional.ofNullable(identities.get(symbol)));
 
@@ -229,6 +234,7 @@ public class AddExchanges
         @Override
         public PlanWithProperties visitOutput(OutputNode node, PreferredProperties preferredProperties)
         {
+            // 这里假设 node 只有一个子节点, 一般为 ProjectNode
             PlanWithProperties child = planChild(node, PreferredProperties.undistributed());
 
             if (!child.getProperties().isSingleNode() && isForceSingleNodeOutput(session)) {

@@ -207,6 +207,7 @@ class PreferredProperties
         }
     }
 
+    // 全局相关的属性
     @Immutable
     public static final class Global
     {

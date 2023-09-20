@@ -29,6 +29,7 @@ import static java.util.Objects.requireNonNull;
 @Immutable
 public class SubPlan
 {
+    // #question: 该结构的含义
     private final PlanFragment fragment;
     private final List<SubPlan> children;
 

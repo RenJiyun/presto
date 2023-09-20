@@ -95,10 +95,6 @@ public abstract class PlanNode
 
     /**
      * A visitor pattern interface to operate on IR.
-     * 不同的节点会将控制分发到不同的方法中, 例如:
-     * SortNode -> visitor.visitSort()
-     * TableScanNode -> visitor.visitTableScan()
-     * #question: 一般来讲, 顶层的节点是哪些? ProjectNode?
      */
     public <R, C> R accept(PlanVisitor<R, C> visitor, C context)
     {

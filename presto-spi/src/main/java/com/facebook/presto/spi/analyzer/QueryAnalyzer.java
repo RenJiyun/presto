@@ -18,6 +18,9 @@ import com.facebook.presto.spi.plan.PlanNode;
 
 /**
  * The QueryAnalyzer interface should be implemented by respective analyzer to provide various analyzer related functionalities.
+ * <p>
+ *                analyze                 plan
+ * PreparedQuery --------> QueryAnalysis ------> PlanNode
  */
 public interface QueryAnalyzer
 {

@@ -129,9 +129,6 @@ public class SqlQueryExecution
     private final ScheduledExecutorService timeoutThreadExecutor;
     private final SectionExecutionFactory sectionExecutionFactory;
     private final InternalNodeManager internalNodeManager;
-
-    // 每个查询都有专属的调度器
-    // #question: 这些调度器如何被管理
     private final AtomicReference<SqlQuerySchedulerInterface> queryScheduler = new AtomicReference<>();
     private final AtomicReference<Plan> queryPlan = new AtomicReference<>();
     private final ExecutionPolicy executionPolicy;
@@ -459,6 +456,7 @@ public class SqlQueryExecution
 
                 //////////////////////////////////////////////////////////////////
                 // plan distribution of query
+                // build queryScheduler, and below we will start it
                 planDistribution(plan);
                 //////////////////////////////////////////////////////////////////
 
@@ -573,6 +571,8 @@ public class SqlQueryExecution
             // fragment the plan
             // the variableAllocator is finally passed to SqlQueryScheduler for runtime cost-based optimizations
             variableAllocator.set(new VariableAllocator(plan.getTypes().allVariables()));
+
+
             SubPlan fragmentedPlan = getSession().getRuntimeStats().profileNanos(
                     FRAGMENT_PLAN_TIME_NANOS,
                     () -> planFragmenter.createSubPlans(stateMachine.getSession(), plan, false, idAllocator, variableAllocator.get(), stateMachine.getWarningCollector()));

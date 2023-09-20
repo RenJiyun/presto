@@ -13,6 +13,7 @@
  */
 package com.facebook.presto.sql.tree;
 
+// #question: what is default behavior?
 public abstract class DefaultTraversalVisitor<R, C>
         extends AstVisitor<R, C>
 {

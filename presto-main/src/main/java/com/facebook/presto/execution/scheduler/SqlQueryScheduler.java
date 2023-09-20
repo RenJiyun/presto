@@ -286,7 +286,7 @@ public class SqlQueryScheduler
         executor.submit(this::schedule);
     }
 
-    // 执行计划调度入口
+    // 调度的主流程逻辑
     private void schedule()
     {
         if (!scheduling.compareAndSet(false, true)) {

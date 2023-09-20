@@ -43,6 +43,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Splits a logical plan into fragments that can be shipped and executed on distributed nodes
+ * #question: HOW???
  */
 public class PlanFragmenter
 {
@@ -72,6 +73,7 @@ public class PlanFragmenter
 
     public SubPlan createSubPlans(Session session, Plan plan, boolean forceSingleNode, PlanNodeIdAllocator idAllocator, VariableAllocator variableAllocator, WarningCollector warningCollector)
     {
+        // it is a PlanVisitor
         Fragmenter fragmenter = new Fragmenter(
                 session,
                 metadata,
