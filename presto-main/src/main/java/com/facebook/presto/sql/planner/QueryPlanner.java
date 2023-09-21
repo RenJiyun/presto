@@ -199,6 +199,7 @@ class QueryPlanner
 
     public RelationPlan plan(QuerySpecification node)
     {
+        // from
         PlanBuilder builder = planFrom(node);
         RelationPlan fromRelationPlan = builder.getRelationPlan();
 
@@ -373,7 +374,8 @@ class QueryPlanner
         subPlan = subqueryPlanner.handleSubqueries(subPlan, rewrittenBeforeSubqueries, node, sqlPlannerContext);
         Expression rewrittenAfterSubqueries = subPlan.rewrite(predicate);
 
-        return subPlan.withNewRoot(new FilterNode(getSourceLocation(node), idAllocator.getNextId(), subPlan.getRoot(), rowExpression(rewrittenAfterSubqueries, sqlPlannerContext)));
+        return subPlan.withNewRoot(new FilterNode(getSourceLocation(node), idAllocator.getNextId(), subPlan.getRoot(),
+                rowExpression(rewrittenAfterSubqueries, sqlPlannerContext)));
     }
 
     private PlanBuilder project(PlanBuilder subPlan, Iterable<Expression> expressions, RelationPlan parentRelationPlan)

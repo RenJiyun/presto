@@ -93,6 +93,7 @@ class PlanBuilder
 
     public Expression rewrite(Expression expression)
     {
+        // #question: where the translation comes from?
         return translations.rewrite(expression);
     }
 

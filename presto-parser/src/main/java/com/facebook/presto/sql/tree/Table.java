@@ -24,6 +24,7 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 public class Table
         extends QueryBody
 {
+    // select * from a.b.c (table)
     private final QualifiedName name;
 
     public Table(QualifiedName name)

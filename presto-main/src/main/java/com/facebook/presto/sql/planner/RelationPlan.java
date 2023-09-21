@@ -38,8 +38,11 @@ import static java.util.Objects.requireNonNull;
  */
 class RelationPlan
 {
+    // TableScanNode
     private final PlanNode root;
     private final List<VariableReferenceExpression> fieldMappings; // for each field in the relation, the corresponding variable from "root"
+
+    // 对应语法分析树中的 scope
     private final Scope scope;
 
     public RelationPlan(PlanNode root, Scope scope, List<VariableReferenceExpression> fieldMappings)

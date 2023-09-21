@@ -167,6 +167,7 @@ class RelationPlanner
         return super.process(node, context);
     }
 
+    // 从中可以产生 TableScanNode
     @Override
     protected RelationPlan visitTable(Table node, SqlPlannerContext context)
     {
@@ -187,6 +188,8 @@ class RelationPlanner
 
         ImmutableList.Builder<VariableReferenceExpression> outputVariablesBuilder = ImmutableList.builder();
         ImmutableMap.Builder<VariableReferenceExpression, ColumnHandle> columns = ImmutableMap.builder();
+
+        // scope 中的 RelationType 表示什么?
         for (Field field : scope.getRelationType().getAllFields()) {
             VariableReferenceExpression variable = variableAllocator.newVariable(getSourceLocation(node), field.getName().get(), field.getType());
             outputVariablesBuilder.add(variable);
@@ -198,6 +201,7 @@ class RelationPlanner
         context.incrementLeafNodes(session);
         PlanNode root = new TableScanNode(getSourceLocation(node.getLocation()), idAllocator.getNextId(), handle, outputVariables, columns.build(), tableConstraints, TupleDomain.all(), TupleDomain.all());
 
+        // root 和 scope 在层级上是可以对应起来的
         return new RelationPlan(root, scope, outputVariables);
     }
 
