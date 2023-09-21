@@ -25,6 +25,8 @@ public class TableColumnMetadata
 {
     private Optional<TableHandle> tableHandle;
     private Map<String, ColumnHandle> columnHandles;
+
+    // ColumnMetadata.name is the key of columnHandles
     private List<ColumnMetadata> columnsMetadata;
 
     public TableColumnMetadata(Optional<TableHandle> tableHandle, Map<String, ColumnHandle> columnHandles, List<ColumnMetadata> columnsMetadata)

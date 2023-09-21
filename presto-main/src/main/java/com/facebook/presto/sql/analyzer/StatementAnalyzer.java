@@ -303,6 +303,8 @@ class StatementAnalyzer
 
     // 用于收集分析过程中的警告信息
     private final WarningCollector warningCollector;
+
+    // SPI 接口, 用于存储层提供相关元数据
     private final MetadataResolver metadataResolver;
 
     public StatementAnalyzer(
@@ -1121,11 +1123,10 @@ class StatementAnalyzer
         @Override
         protected Scope visitQuery(Query node, Optional<Scope> scope)
         {
-            // 一般顶层的 scope 为 empty
             // 处理 with 结构
             Scope withScope = analyzeWith(node, scope);
 
-            // 处理 body 结构
+            // 处理 body 结构: Table, QuerySpecification, SetOperation, TableSubQuery, Values
             Scope queryBodyScope = process(node.getQueryBody(), withScope);
             List<Expression> orderByExpressions = emptyList();
             if (node.getOrderBy().isPresent()) {
@@ -1251,6 +1252,7 @@ class StatementAnalyzer
                                 .collect(toImmutableList());
                     }
 
+                    // fields 决定 RelationType
                     return createAndAssignScope(table, scope, fields);
                 }
             }
@@ -1293,6 +1295,8 @@ class StatementAnalyzer
                 }
             }
 
+            // 以下是常规性操作
+            // 这里的传递的 session 仅用于登记一些统计信息
             TableColumnMetadata tableColumnsMetadata = getTableColumnsMetadata(session, metadataResolver, analysis.getMetadataHandle(), name);
             Optional<TableHandle> tableHandle = tableColumnsMetadata.getTableHandle();
 
@@ -1701,11 +1705,13 @@ class StatementAnalyzer
             checkState(node.getRelations().size() >= 2);
             List<Scope> relationScopes = node.getRelations().stream()
                     .map(relation -> {
+                        // 处理 EXCEPT, INTERSECT, UNION 中包含的子表结构
                         Scope relationScope = process(relation, scope);
                         return createAndAssignScope(relation, scope, relationScope.getRelationType().withOnlyVisibleFields());
                     })
                     .collect(toImmutableList());
 
+            // set 操作的表之间的结构预期是一致的
             Type[] outputFieldTypes = relationScopes.get(0).getRelationType().getVisibleFields().stream()
                     .map(Field::getType)
                     .toArray(Type[]::new);
@@ -1717,9 +1723,12 @@ class StatementAnalyzer
                                 outputFieldSize,
                                 UNION_DISTINCT_FIELDS_WARNING_THRESHOLD)));
             }
+
             for (Scope relationScope : relationScopes) {
                 RelationType relationType = relationScope.getRelationType();
                 int descFieldSize = relationType.getVisibleFields().size();
+
+                // EXCEPT, INTERSECT, UNIO
                 String setOperationName = node.getClass().getSimpleName().toUpperCase(ENGLISH);
                 if (outputFieldSize != descFieldSize) {
                     throw new SemanticException(

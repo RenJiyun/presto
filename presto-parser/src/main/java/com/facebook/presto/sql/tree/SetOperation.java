@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+// EXCEPT, INTERSECT, UNION
 public abstract class SetOperation
         extends QueryBody
 {

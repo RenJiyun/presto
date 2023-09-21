@@ -31,7 +31,10 @@ import static java.util.Objects.requireNonNull;
 @ThriftStruct
 public class QualifiedObjectName
 {
+    // 哪个存储层, 例如 mysql, hive
     private final String catalogName;
+
+    // 哪个数据库
     private final String schemaName;
     private final String objectName;
 

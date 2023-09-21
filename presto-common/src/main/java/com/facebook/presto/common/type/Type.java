@@ -23,6 +23,7 @@ import io.airlift.slice.Slice;
 
 import java.util.List;
 
+// presto 内部的类型系统
 public interface Type
 {
     /**

@@ -41,6 +41,7 @@ public class RelationType
     private final List<Field> visibleFields;
     private final List<Field> allFields;
 
+    // 记录对应的 field 在哪个位置
     private final Map<Field, Integer> fieldIndexes;
 
     public RelationType(Field... fields)
