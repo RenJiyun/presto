@@ -21,9 +21,11 @@ import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
+// 描述 sql 的输出
 public class DescribeOutput
         extends Statement
 {
+    // statement name
     private final Identifier name;
 
     public DescribeOutput(NodeLocation location, Identifier name)

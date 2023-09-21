@@ -133,6 +133,8 @@ public class BuiltInQueryPreparer
     public static class BuiltInPreparedQuery
             extends PreparedQuery
     {
+        // 单纯语法分析的结果
+        // 在 Statement 中不存在任何语义信息
         private final Statement statement;
         private final Statement wrappedStatement;
         private final List<Expression> parameters;

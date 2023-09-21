@@ -26,6 +26,9 @@ public class Query
         extends Statement
 {
     private final Optional<With> with;
+
+    // abstractly speaking, queryBody is a Relation
+    // with XXX select queryBody orderBy offset limit
     private final QueryBody queryBody;
     private final Optional<OrderBy> orderBy;
     private final Optional<String> limit;

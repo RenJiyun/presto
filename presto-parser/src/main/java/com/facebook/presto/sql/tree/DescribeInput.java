@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
+// 描述 sql 的输入
 public class DescribeInput
         extends Statement
 {

@@ -292,6 +292,8 @@ class StatementAnalyzer
 {
     private static final Logger log = Logger.get(StatementAnalyzer.class);
     private static final int UNION_DISTINCT_FIELDS_WARNING_THRESHOLD = 3;
+
+    // 记录分析结果
     private final Analysis analysis;
     private final Metadata metadata;
     private final FunctionAndTypeResolver functionAndTypeResolver;
@@ -336,6 +338,8 @@ class StatementAnalyzer
      * Visitor context represents local query scope (if exists). The invariant is
      * that the local query scopes hierarchy should always have outer query scope
      * (if provided) as ancestor.
+     * <p>
+     * the return type is Scope, and the context is Optional<Scope>
      */
     private class Visitor
             extends DefaultTraversalVisitor<Scope, Optional<Scope>>
@@ -351,7 +355,9 @@ class StatementAnalyzer
 
         public Scope process(Node node, Optional<Scope> scope)
         {
+            // 以此将逻辑分发至对各个节点的处理方法
             Scope returnScope = super.process(node, scope);
+
             checkState(returnScope.getOuterQueryParent().equals(outerQueryScope), "result scope should have outer query scope equal with parameter outer query scope");
             scope.ifPresent(value -> checkState(hasScopeAsLocalParent(returnScope, value), "return scope should have context scope as one of ancestors"));
             return returnScope;
@@ -1111,10 +1117,15 @@ class StatementAnalyzer
             return createAndAssignScope(node, scope, Field.newUnqualified(node.getLocation(), "Query Plan", VARCHAR));
         }
 
+        // #question: scope 的结构
         @Override
         protected Scope visitQuery(Query node, Optional<Scope> scope)
         {
+            // 一般顶层的 scope 为 empty
+            // 处理 with 结构
             Scope withScope = analyzeWith(node, scope);
+
+            // 处理 body 结构
             Scope queryBodyScope = process(node.getQueryBody(), withScope);
             List<Expression> orderByExpressions = emptyList();
             if (node.getOrderBy().isPresent()) {
@@ -1188,6 +1199,7 @@ class StatementAnalyzer
             return createAndAssignScope(node, scope, queryScope.getRelationType());
         }
 
+        // from visitQueryBody
         @Override
         protected Scope visitTable(Table table, Optional<Scope> scope)
         {
@@ -2893,6 +2905,7 @@ class StatementAnalyzer
             if (parentScope.isPresent()) {
                 // parent scope represents local query scope hierarchy. Local query scope
                 // hierarchy should have outer query scope as ancestor already.
+                // 设置 parent scope
                 scopeBuilder.withParent(parentScope.get());
             }
             else if (outerQueryScope.isPresent()) {

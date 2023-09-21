@@ -62,6 +62,7 @@ public class MetadataExtractor
 
     public void populateMetadataHandle(Session session, Statement statement, MetadataHandle metadataHandle)
     {
+        // 0.282中一个新的特性
         if (executor.isPresent() && isPreProcessMetadataCalls(session)) {
             metadataHandle.setPreProcessMetadataCalls(true);
             populateMetadataHandle(session, statement, metadataHandle, new MetadataExtractorContext());

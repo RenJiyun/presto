@@ -15,6 +15,7 @@ package com.facebook.presto.sql.tree;
 
 import java.util.Optional;
 
+// Table, QuerySpecification, SetOperation, TableSubQuery, Values
 public abstract class QueryBody
         extends Relation
 {

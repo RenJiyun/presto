@@ -109,17 +109,23 @@ public class Analyzer
 
     public Analysis analyzeSemantic(Statement statement, boolean isDescribe)
     {
-        // 基于几个固定的规则进行重写, 提供 Rewrite 接口
-        Statement rewrittenStatement = StatementRewrite.rewrite(session, metadata, sqlParser, queryExplainer, statement, parameters, parameterLookup, accessControl, warningCollector);
+        // 非常规的功能性 sql 语句，如：DESCRIBE INPUT statement_name
+        Statement rewrittenStatement = StatementRewrite.rewrite(
+                session, metadata, sqlParser, queryExplainer, statement, parameters, parameterLookup, accessControl, warningCollector);
+
         Analysis analysis = new Analysis(rewrittenStatement, parameterLookup, isDescribe);
 
         metadataExtractor.populateMetadataHandle(session, rewrittenStatement, analysis.getMetadataHandle());
 
-        // 通过 visitor 模式进行分析
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         StatementAnalyzer analyzer = new StatementAnalyzer(analysis, metadata, sqlParser, accessControl, session, warningCollector);
+        // 采用 visitor 模式进行分析
         analyzer.analyze(rewrittenStatement, Optional.empty());
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         analyzeForUtilizedColumns(analysis, analysis.getStatement());
-        analysis.populateTableColumnAndSubfieldReferencesForAccessControl(isCheckAccessControlOnUtilizedColumnsOnly(session), isCheckAccessControlWithSubfields(session));
+        analysis.populateTableColumnAndSubfieldReferencesForAccessControl(isCheckAccessControlOnUtilizedColumnsOnly(session),
+                isCheckAccessControlWithSubfields(session));
         return analysis;
     }
 

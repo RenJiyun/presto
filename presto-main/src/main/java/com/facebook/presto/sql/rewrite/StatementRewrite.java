@@ -34,11 +34,11 @@ import static java.util.Objects.requireNonNull;
 public final class StatementRewrite
 {
     private static final List<Rewrite> REWRITES = ImmutableList.of(
-            new DescribeInputRewrite(),
-            new DescribeOutputRewrite(),
-            new ShowQueriesRewrite(),
+            new DescribeInputRewrite(), // DESCRIBE INPUT statement_name
+            new DescribeOutputRewrite(), // DESCRIBE OUTPUT statement_name
+            new ShowQueriesRewrite(), // SHOW TABLES ...
             new ShowStatsRewrite(),
-            new ExplainRewrite(),
+            new ExplainRewrite(), // EXPLAIN ...
             new MaterializedViewOptimizationRewrite());
 
     private StatementRewrite() {}
