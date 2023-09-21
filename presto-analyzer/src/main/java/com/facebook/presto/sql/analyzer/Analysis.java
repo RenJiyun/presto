@@ -92,6 +92,7 @@ import static java.util.Objects.requireNonNull;
 
 public class Analysis
 {
+    // 语法树根节点
     @Nullable
     private final Statement root;
     private final Map<NodeRef<Parameter>, Expression> parameters;

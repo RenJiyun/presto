@@ -1623,6 +1623,7 @@ class StatementAnalyzer
             return createAndAssignScope(node, scope, queryScope.getRelationType());
         }
 
+        // QuerySpecification 本身是一个比较完整的结构
         @Override
         protected Scope visitQuerySpecification(QuerySpecification node, Optional<Scope> scope)
         {
@@ -1630,6 +1631,8 @@ class StatementAnalyzer
             // to pass down to analyzeFrom
 
             analysis.setCurrentSubquery(node);
+
+            // FROM 子句
             Scope sourceScope = analyzeFrom(node, scope);
 
             if (node.getWhere().isPresent()) {
@@ -1637,6 +1640,7 @@ class StatementAnalyzer
                 // If analysis already contains where clause information for this node, analyzeWhere
                 // was already called for this node when fetching materialized view status
                 if (analysis.getWhere(node) == null) {
+                    // WHERE 子句
                     analyzeWhere(node, sourceScope, predicate);
                 }
             }

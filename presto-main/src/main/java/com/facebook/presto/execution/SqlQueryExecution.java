@@ -203,6 +203,7 @@ public class SqlQueryExecution
                     Thread.currentThread(),
                     timeoutThreadExecutor,
                     getQueryAnalyzerTimeout(getSession()))) {
+                // 语义分析
                 this.queryAnalysis = queryAnalyzer.analyze(analyzerContext, preparedQuery);
             }
 
@@ -526,7 +527,7 @@ public class SqlQueryExecution
             stateMachine.beginAnalysis();
 
             ////////////////////////////////////////////////////////////////////////////
-            // 以 InternalPlanNode 表达逻辑计划, 相对来讲是平凡的算法
+            // 1. 生成逻辑执行计划
             PlanNode planNode = stateMachine.getSession()
                     .getRuntimeStats()
                     // 做一些时间统计
@@ -548,9 +549,12 @@ public class SqlQueryExecution
                     costCalculator,
                     false);
 
+            ////////////////////////////////////////////////////////////////////////////
+            // 2. 优化执行计划
             Plan plan = getSession().getRuntimeStats().profileNanos(
                     OPTIMIZER_TIME_NANOS,
                     () -> optimizer.validateAndOptimizePlan(planNode, OPTIMIZED_AND_VALIDATED));
+            ////////////////////////////////////////////////////////////////////////////
 
             queryPlan.set(plan);
             stateMachine.setPlanStatsAndCosts(plan.getStatsAndCosts());

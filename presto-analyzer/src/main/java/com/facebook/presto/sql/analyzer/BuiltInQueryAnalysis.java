@@ -28,6 +28,7 @@ import java.util.Set;
 public class BuiltInQueryAnalysis
         implements QueryAnalysis
 {
+    // 分析结果
     private final Analysis analysis;
 
     public BuiltInQueryAnalysis(Analysis analysis)

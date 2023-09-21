@@ -499,7 +499,9 @@ public class LogicalPlanner
 
     private RelationPlan createRelationPlan(Analysis analysis, Query query, SqlPlannerContext context)
     {
-        return new RelationPlanner(analysis, variableAllocator, idAllocator, buildLambdaDeclarationToVariableMap(analysis, variableAllocator), metadata, session, sqlParser)
+        return new RelationPlanner(analysis, variableAllocator, idAllocator,
+                buildLambdaDeclarationToVariableMap(analysis, variableAllocator), metadata, session, sqlParser)
+                // 分发至对应的节点处理方法
                 .process(query, context);
     }
 
