@@ -43,8 +43,7 @@ import static com.facebook.presto.util.MoreLists.listOfListsCopy;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-// #question: Why we need to generate a ExchangeNode?
-// 该节点的存在会影响 fragmenter 的执行策略
+// #question: when we need to use ExchangeNode?
 @Immutable
 public class ExchangeNode
         extends InternalPlanNode

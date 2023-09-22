@@ -203,6 +203,7 @@ class QueryPlanner
         PlanBuilder builder = planFrom(node);
         RelationPlan fromRelationPlan = builder.getRelationPlan();
 
+        // filter 将入参的 builder 作为 sub plan
         builder = filter(builder, analysis.getWhere(node), node);
         builder = aggregate(builder, node);
         builder = filter(builder, analysis.getHaving(node), node);
@@ -363,6 +364,7 @@ class QueryPlanner
                 ImmutableList.of());
     }
 
+    // 在数据流向上, subPlan 将作为 filter 的输入
     private PlanBuilder filter(PlanBuilder subPlan, Expression predicate, Node node)
     {
         if (predicate == null) {
@@ -374,6 +376,7 @@ class QueryPlanner
         subPlan = subqueryPlanner.handleSubqueries(subPlan, rewrittenBeforeSubqueries, node, sqlPlannerContext);
         Expression rewrittenAfterSubqueries = subPlan.rewrite(predicate);
 
+        // FilterNode ---> TableScanNode
         return subPlan.withNewRoot(new FilterNode(getSourceLocation(node), idAllocator.getNextId(), subPlan.getRoot(),
                 rowExpression(rewrittenAfterSubqueries, sqlPlannerContext)));
     }
