@@ -333,6 +333,7 @@ class StatementAnalyzer
 
     public Scope analyze(Node node, Optional<Scope> outerQueryScope)
     {
+        // 注意 process 方法中入参的 scope 为空, it is right
         return new Visitor(outerQueryScope, warningCollector).process(node, Optional.empty());
     }
 
@@ -346,6 +347,7 @@ class StatementAnalyzer
     private class Visitor
             extends DefaultTraversalVisitor<Scope, Optional<Scope>>
     {
+        // 外层作用域
         private final Optional<Scope> outerQueryScope;
         private final WarningCollector warningCollector;
 
@@ -355,6 +357,8 @@ class StatementAnalyzer
             this.warningCollector = requireNonNull(warningCollector, "warningCollector is null");
         }
 
+
+        // 此处的 scope 为正在处理的节点 node 的作用域
         public Scope process(Node node, Optional<Scope> scope)
         {
             // 以此将逻辑分发至对各个节点的处理方法
@@ -1119,14 +1123,14 @@ class StatementAnalyzer
             return createAndAssignScope(node, scope, Field.newUnqualified(node.getLocation(), "Query Plan", VARCHAR));
         }
 
-        // #question: scope 的结构
+        // 绝大多数情况下, 这里的 scope 是空的, 因为 Query 节点大部分是顶层节点
         @Override
         protected Scope visitQuery(Query node, Optional<Scope> scope)
         {
-            // 处理 with 结构
+            // with
             Scope withScope = analyzeWith(node, scope);
 
-            // 处理 body 结构: Table, QuerySpecification, SetOperation, TableSubQuery, Values
+            // body: Table, QuerySpecification, SetOperation, TableSubQuery, Values
             Scope queryBodyScope = process(node.getQueryBody(), withScope);
             List<Expression> orderByExpressions = emptyList();
             if (node.getOrderBy().isPresent()) {
@@ -1200,7 +1204,6 @@ class StatementAnalyzer
             return createAndAssignScope(node, scope, queryScope.getRelationType());
         }
 
-        // from visitQueryBody
         @Override
         protected Scope visitTable(Table table, Optional<Scope> scope)
         {
@@ -1295,7 +1298,6 @@ class StatementAnalyzer
                 }
             }
 
-            // 以下是常规性操作
             // 这里的传递的 session 仅用于登记一些统计信息
             TableColumnMetadata tableColumnsMetadata = getTableColumnsMetadata(session, metadataResolver, analysis.getMetadataHandle(), name);
             Optional<TableHandle> tableHandle = tableColumnsMetadata.getTableHandle();
@@ -2774,6 +2776,7 @@ class StatementAnalyzer
             return builder.build();
         }
 
+        // 入参的 scope 实际上是 parent scope
         private Scope analyzeWith(Query node, Optional<Scope> scope)
         {
             // analyze WITH clause
@@ -2902,6 +2905,7 @@ class StatementAnalyzer
                     .withRelationType(RelationId.of(node), relationType)
                     .build();
 
+            // 登记该 node 的 scope
             analysis.setScope(node, scope);
             return scope;
         }

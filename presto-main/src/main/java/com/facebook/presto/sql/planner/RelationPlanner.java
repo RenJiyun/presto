@@ -167,13 +167,12 @@ class RelationPlanner
         return super.process(node, context);
     }
 
-    // 从中可以产生 TableScanNode
+    // generate TableScanNode
     @Override
     protected RelationPlan visitTable(Table node, SqlPlannerContext context)
     {
         Query namedQuery = analysis.getNamedQuery(node);
 
-        // #question: 这里 node 和 scope 之间的关系
         Scope scope = analysis.getScope(node);
 
         if (namedQuery != null) {
@@ -189,9 +188,10 @@ class RelationPlanner
         TableHandle handle = analysis.getTableHandle(node);
 
         ImmutableList.Builder<VariableReferenceExpression> outputVariablesBuilder = ImmutableList.builder();
+
+        // #question: ColumnHandle is a SPI interface
         ImmutableMap.Builder<VariableReferenceExpression, ColumnHandle> columns = ImmutableMap.builder();
 
-        // scope 中的 RelationType 表示什么?
         for (Field field : scope.getRelationType().getAllFields()) {
             VariableReferenceExpression variable = variableAllocator.newVariable(getSourceLocation(node), field.getName().get(), field.getType());
             outputVariablesBuilder.add(variable);
@@ -202,10 +202,10 @@ class RelationPlanner
         List<TableConstraint<ColumnHandle>> tableConstraints = metadata.getTableMetadata(session, handle).getMetadata().getTableConstraints();
         context.incrementLeafNodes(session);
 
-        // 生成 TableScanNode
-        PlanNode root = new TableScanNode(getSourceLocation(node.getLocation()), idAllocator.getNextId(), handle, outputVariables, columns.build(), tableConstraints, TupleDomain.all(), TupleDomain.all());
+        PlanNode root = new TableScanNode(getSourceLocation(node.getLocation()), idAllocator.getNextId(), handle,
+                outputVariables, columns.build(), tableConstraints, TupleDomain.all(), TupleDomain.all());
 
-        // root 和 scope 在层级上是可以对应起来的
+        // root <---> Table <---> scope
         return new RelationPlan(root, scope, outputVariables);
     }
 

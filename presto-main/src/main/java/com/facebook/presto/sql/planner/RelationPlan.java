@@ -38,8 +38,10 @@ import static java.util.Objects.requireNonNull;
  */
 class RelationPlan
 {
-    // TableScanNode
+    // TableScanNode <---> Table (语法树节点) <---> scope (拥有语义信息)
     private final PlanNode root;
+
+    // the fields of the relation, maybe in order? not sure
     private final List<VariableReferenceExpression> fieldMappings; // for each field in the relation, the corresponding variable from "root"
 
     // 对应语法分析树中的 scope

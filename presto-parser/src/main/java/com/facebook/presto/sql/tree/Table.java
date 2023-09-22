@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
+// Table 的大多数信息都需要从分析之后对应的 Scope 中获取
+// com/facebook/presto/sql/analyzer/Analysis.java:104
 public class Table
         extends QueryBody
 {

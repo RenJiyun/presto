@@ -40,6 +40,8 @@ public class Scope
     private final Optional<Scope> parent;
     private final boolean queryBoundary;
     private final RelationId relationId;
+
+    // RelationType is determined by the fields of the table
     private final RelationType relation;
     private final Map<String, WithQuery> namedQueries;
 

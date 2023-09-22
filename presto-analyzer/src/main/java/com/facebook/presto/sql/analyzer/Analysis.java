@@ -100,6 +100,7 @@ public class Analysis
 
     private final Map<NodeRef<Table>, Query> namedQueries = new LinkedHashMap<>();
 
+    // 维护 Node 和 Scope 之间的对应关系
     private final Map<NodeRef<Node>, Scope> scopes = new LinkedHashMap<>();
     private final Multimap<NodeRef<Expression>, FieldId> columnReferences = ArrayListMultimap.create();
 
