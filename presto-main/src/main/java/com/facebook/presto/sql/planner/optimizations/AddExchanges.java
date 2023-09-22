@@ -149,8 +149,6 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-// add the ExchangeNode to the plan
-// #question: Why we need to add the ExchangeNode to the plan?
 public class AddExchanges
         implements PlanOptimizer
 {
@@ -170,7 +168,6 @@ public class AddExchanges
                              PlanNodeIdAllocator idAllocator, WarningCollector warningCollector)
     {
         PlanWithProperties result = new Rewriter(idAllocator, variableAllocator, session, partitioningProviderManager)
-                // 没有任何偏好的属性
                 .accept(plan, PreferredProperties.any());
         return result.getNode();
     }
@@ -234,11 +231,14 @@ public class AddExchanges
         @Override
         public PlanWithProperties visitOutput(OutputNode node, PreferredProperties preferredProperties)
         {
-            // 这里假设 node 只有一个子节点, 一般为 ProjectNode
+            // 这里假设 node 只有一个源节点 (从数据流向的维度), 一般为 ProjectNode
             PlanWithProperties child = planChild(node, PreferredProperties.undistributed());
 
+            // #question: 源节点如何标明它的分布式特性?
+            // forceSingleNodeOutput 只是一个特性, 可配置关闭
             if (!child.getProperties().isSingleNode() && isForceSingleNodeOutput(session)) {
                 child = withDerivedProperties(
+                        // 需要从多个数据源汇集到一个节点上
                         gatheringExchange(idAllocator.getNextId(), REMOTE_STREAMING, child.getNode()),
                         child.getProperties());
             }
@@ -622,6 +622,7 @@ public class AddExchanges
         @Override
         public PlanWithProperties visitTableScan(TableScanNode node, PreferredProperties preferredProperties)
         {
+            // 入参的 TRUE_CONSTANT 只是为了兼容 filter push down
             return planTableScan(node, TRUE_CONSTANT);
         }
 

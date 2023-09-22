@@ -354,6 +354,7 @@ public class ActualProperties
                 .toString();
     }
 
+    // 分布式属性
     @Immutable
     public static final class Global
     {
