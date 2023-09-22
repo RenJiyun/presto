@@ -40,7 +40,11 @@ public final class TableScanNode
         extends PlanNode
 {
     private final TableHandle table;
+
+    // 该表的所有列
     private final Map<VariableReferenceExpression, ColumnHandle> assignments;
+
+    // 跟 assignments 的 key set 有对应关系
     private final List<VariableReferenceExpression> outputVariables;
 
     // Used during predicate refinement over multiple passes of predicate pushdown

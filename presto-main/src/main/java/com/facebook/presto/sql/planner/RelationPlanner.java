@@ -167,7 +167,6 @@ class RelationPlanner
         return super.process(node, context);
     }
 
-    // generate TableScanNode
     @Override
     protected RelationPlan visitTable(Table node, SqlPlannerContext context)
     {

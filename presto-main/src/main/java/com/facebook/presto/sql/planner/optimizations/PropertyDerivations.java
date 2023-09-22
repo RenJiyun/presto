@@ -111,6 +111,7 @@ public class PropertyDerivations
 
     public static ActualProperties derivePropertiesRecursively(PlanNode node, Metadata metadata, Session session, TypeProvider types, SqlParser parser)
     {
+        // 收集源节点属性
         List<ActualProperties> inputProperties = node.getSources().stream()
                 .map(source -> derivePropertiesRecursively(source, metadata, session, types, parser))
                 .collect(toImmutableList());
@@ -120,6 +121,7 @@ public class PropertyDerivations
     public static ActualProperties deriveProperties(PlanNode node, List<ActualProperties> inputProperties,
                                                     Metadata metadata, Session session, TypeProvider types, SqlParser parser)
     {
+        // 计算本节点的分布式属性
         ActualProperties output = node.accept(new Visitor(metadata, session, types, parser), inputProperties);
 
         output.getNodePartitioning().ifPresent(partitioning ->
@@ -757,10 +759,12 @@ public class PropertyDerivations
                     .build();
         }
 
+        // 对于 TableScanNode 而言, 大多数情况下, inputProperties 为空
         @Override
         public ActualProperties visitTableScan(TableScanNode node, List<ActualProperties> inputProperties)
         {
             TableLayout layout = metadata.getLayout(session, node.getTable());
+            // 该表的所有列
             Map<ColumnHandle, VariableReferenceExpression> assignments = ImmutableBiMap.copyOf(node.getAssignments()).inverse();
 
             ActualProperties.Builder properties = ActualProperties.builder();
@@ -808,7 +812,9 @@ public class PropertyDerivations
             return ActualProperties.builder().build();
         }
 
-        private Global deriveGlobalProperties(TableLayout layout, Map<ColumnHandle, VariableReferenceExpression> assignments, Map<ColumnHandle, ConstantExpression> constants)
+        // 计算该表的分布式属性
+        private Global deriveGlobalProperties(TableLayout layout, Map<ColumnHandle, VariableReferenceExpression> assignments,
+                                              Map<ColumnHandle, ConstantExpression> constants)
         {
             Optional<List<VariableReferenceExpression>> streamPartitioning = layout.getStreamPartitioningColumns()
                     .flatMap(columns -> translateToNonConstantSymbols(columns, assignments, constants));
