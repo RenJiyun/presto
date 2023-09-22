@@ -135,8 +135,9 @@ public class ConnectorTableLayout
     }
 
     /**
+     * #quesiton: what is table stream?
      * The partitioning for the table streams.
-     * If empty, the table layout is partitioned arbitrarily.
+     * If empty, the table layout is partitioned arbitrarily. //////////////// Here is very confusing, empty means the Optional is empty.
      * Otherwise, table steams are partitioned on the given set of columns (or unpartitioned, if the set is empty)
      * <p>
      * If the table is partitioned, the connector guarantees that each combination of values for

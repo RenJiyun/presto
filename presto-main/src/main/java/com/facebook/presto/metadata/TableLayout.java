@@ -117,6 +117,8 @@ public class TableLayout
     public static class TablePartitioning
     {
         private final PartitioningHandle partitioningHandle;
+
+        // 分片列
         private final List<ColumnHandle> partitioningColumns;
 
         public TablePartitioning(PartitioningHandle partitioningHandle, List<ColumnHandle> partitioningColumns)

@@ -52,6 +52,8 @@ import static java.util.Objects.requireNonNull;
 public class ConnectorTablePartitioning
 {
     private final ConnectorPartitioningHandle partitioningHandle;
+
+    // 用于切片的列
     private final List<ColumnHandle> partitioningColumns;
 
     public ConnectorTablePartitioning(ConnectorPartitioningHandle partitioningHandle, List<ColumnHandle> partitioningColumns)
